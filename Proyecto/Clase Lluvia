@@ -1,1 +1,113 @@
+package puppy.code;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+
+public class Lluvia {
+    private Array<Gota> gotas;
+    private long lastDropTime;
+    private Texture gotaBuena;
+    private Texture gotaMala;
+    private Sound dropSound;
+    private Music rainMusic;
+    private float baseSpeed = 300f; 
+    private long spawnIntervalNanos = 100000000L; 
+
+    public Lluvia(Texture gotaBuena, Texture gotaMala, Sound ss, Music mm) {
+        rainMusic = mm;
+        dropSound = ss;
+        this.gotaBuena = gotaBuena;
+        this.gotaMala = gotaMala;
+    }
+
+    public void crear() {
+        gotas = new Array<Gota>();
+        crearGotaDeLluvia();
+        rainMusic.setLooping(true);
+        rainMusic.play();
+    }
+
+    private void crearGotaDeLluvia() {
+        float x = MathUtils.random(0, 800 - 64);
+        float y = 480;
+        // decidir tipo aleatorio
+        if (MathUtils.random(1, 10) < 5) {
+            gotas.add(new GotaMala(gotaMala, x, y, baseSpeed));
+        } else {
+            gotas.add(new GotaBuena(gotaBuena, x, y, baseSpeed));
+        }
+        lastDropTime = TimeUtils.nanoTime();
+    }
+
+    /**
+     * Actualiza posiciones y colisiones. Retorna false si hay game over.
+     */
+    public boolean actualizarMovimiento(Tarro tarro) {
+        // generar gotas de lluvia
+        if (TimeUtils.nanoTime() - lastDropTime > spawnIntervalNanos) crearGotaDeLluvia();
+
+        float dt = Gdx.graphics.getDeltaTime();
+
+        // iterar por índice para permitir eliminación segura
+        for (int i = 0; i < gotas.size; i++) {
+            Gota g = gotas.get(i);
+            g.update(dt);
+
+            // si la gota ya salió de pantalla
+            if (!g.isActivo()) {
+                gotas.removeIndex(i);
+                i--;
+                continue;
+            }
+
+            // colisión con el tarro
+            if (g.getBounds().overlaps(tarro.getArea())) {
+                // delegar efecto a la propia gota
+                g.onCollide(tarro);
+
+                // reproducir sonido si es gota buena
+                if (g instanceof GotaBuena) {
+                    dropSound.play();
+                }
+
+                // si tras chocar, tarro se quedó sin vidas -> game over
+                if (tarro.getVidas() <= 0) {
+                    return false;
+                }
+
+                // eliminar la gota si quedó inactiva
+                if (!g.isActivo()) {
+                    gotas.removeIndex(i);
+                    i--;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void actualizarDibujoLluvia(SpriteBatch batch) {
+        for (int i = 0; i < gotas.size; i++) {
+            Gota g = gotas.get(i);
+            batch.draw(g.getTexture(), g.getBounds().x, g.getBounds().y);
+        }
+    }
+
+    public void destruir() {
+        dropSound.dispose();
+        rainMusic.dispose();
+    }
+
+    public void pausar() {
+        rainMusic.stop();
+    }
+
+    public void continuar() {
+        rainMusic.play();
+    }
+}
