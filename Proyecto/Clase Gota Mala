@@ -1,1 +1,18 @@
+package puppy.code;
+
+import com.badlogic.gdx.graphics.Texture;
+
+public class GotaMala extends Gota {
+
+    public GotaMala(Texture texture, float x, float y, float velocidadY) {
+        super(texture, x, y, velocidadY);
+    }
+
+    @Override
+    public void onCollide(Tarro tarro) {
+        if (!isActivo()) return;
+        tarro.dañar();
+        setActivo(false);
+    }
+}
 
