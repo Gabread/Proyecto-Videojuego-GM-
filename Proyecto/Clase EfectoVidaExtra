@@ -1,1 +1,71 @@
+package puppy.code;
+
+
+public class EfectoVidaExtra implements Efectible {
+    
+    private boolean activo;
+    private float tiempoRestante;
+    private float duracionTotal;
+    private Tarro tarroAfectado;
+    private boolean vidaOtorgada;
+    
+    public EfectoVidaExtra(Tarro tarro, float duracion) {
+        this.tarroAfectado = tarro;
+        this.duracionTotal = duracion;
+        this.tiempoRestante = 0;
+        this.activo = false;
+        this.vidaOtorgada = false;
+    }
+    
+    @Override
+    public void activarEfecto() {
+        if (!activo) {
+            activo = true;
+            tiempoRestante = duracionTotal;
+            if (!vidaOtorgada) {
+                int vidasActuales = tarroAfectado.getVidas();
+                tarroAfectado.setVidas(vidasActuales + 1);
+                vidaOtorgada = true;
+                System.out.println("¡Vida extra otorgada! Vidas actuales: " + tarroAfectado.getVidas());
+            }
+        }
+    }
+    
+    @Override
+    public void desactivarEfecto() {
+        activo = false;
+        tiempoRestante = 0;
+        System.out.println("Efecto de vida extra finalizado");
+    }
+    
+    @Override
+    public void actualizarEfecto(float delta) {
+        if (activo) {
+            tiempoRestante -= delta;
+            if (tiempoRestante <= 0) {
+                desactivarEfecto();
+            }
+        }
+    }
+    
+    @Override
+    public boolean estaActivo() {
+        return activo;
+    }
+    
+    @Override
+    public float getTiempoRestante() {
+        return tiempoRestante;
+    }
+    
+    @Override
+    public String getDescripcionEfecto() {
+        return "Vida Extra - +1 vida otorgada";
+    }
+    
+    public boolean isVidaOtorgada() {
+        return vidaOtorgada;
+    }
+}
+
 
