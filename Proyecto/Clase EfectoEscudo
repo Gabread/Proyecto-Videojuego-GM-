@@ -1,1 +1,67 @@
+package puppy.code;
+
+
+public class EfectoEscudo implements Efectible {
+    
+    private boolean activo;
+    private float tiempoRestante;
+    private float duracionTotal;
+    private Tarro tarroAfectado;
+    
+    public EfectoEscudo(Tarro tarro, float duracion) {
+        this.tarroAfectado = tarro;
+        this.duracionTotal = duracion;
+        this.tiempoRestante = 0;
+        this.activo = false;
+    }
+    
+    @Override
+    public void activarEfecto() {
+        if (!activo) {
+            activo = true;
+            tiempoRestante = duracionTotal;
+            System.out.println("¡Escudo activado por " + duracionTotal + " segundos!");
+        }
+    }
+    
+    @Override
+    public void desactivarEfecto() {
+        activo = false;
+        tiempoRestante = 0;
+        System.out.println("Escudo desactivado");
+    }
+    
+    @Override
+    public void actualizarEfecto(float delta) {
+        if (activo) {
+            tiempoRestante -= delta;
+            if (tiempoRestante <= 0) {
+                desactivarEfecto();
+            }
+        }
+    }
+    
+    @Override
+    public boolean estaActivo() {
+        return activo;
+    }
+    
+    @Override
+    public float getTiempoRestante() {
+        return tiempoRestante;
+    }
+    
+    @Override
+    public String getDescripcionEfecto() {
+        return "Escudo protector - Inmunidad a gotas malas";
+    }
+    
+    public boolean absorberDaño() {
+        if (activo) {
+            System.out.println("¡El escudo absorbió el daño!");
+            return true;
+        }
+        return false;
+    }
+}
 
