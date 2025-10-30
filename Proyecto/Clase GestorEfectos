@@ -1,1 +1,61 @@
+package puppy.code;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+public class GestorEfectos {
+    
+    private ArrayList<Efectible> efectosActivos;
+    
+    public GestorEfectos() {
+        efectosActivos = new ArrayList<Efectible>();
+    }
+    public void agregarEfecto(Efectible efecto) {
+        efectosActivos.add(efecto);
+        efecto.activarEfecto();
+    }
+
+    public void actualizarTodos(float delta) {
+        Iterator<Efectible> iterator = efectosActivos.iterator();
+        while (iterator.hasNext()) {
+            Efectible efecto = iterator.next();
+            efecto.actualizarEfecto(delta);
+            if (!efecto.estaActivo()) {
+                iterator.remove();
+            }
+        }
+    }
+    
+
+    public boolean tieneEfectoActivo(Class<? extends Efectible> tipoEfecto) {
+        for (Efectible efecto : efectosActivos) {
+            if (tipoEfecto.isInstance(efecto) && efecto.estaActivo()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void limpiarEfectos() {
+        for (Efectible efecto : efectosActivos) {
+            efecto.desactivarEfecto();
+        }
+        efectosActivos.clear();
+    }
+    
+    public String getDescripcionEfectosActivos() {
+        if (efectosActivos.isEmpty()) {
+            return "Sin efectos activos";
+        }
+        
+        StringBuilder sb = new StringBuilder("Efectos activos:\n");
+        for (Efectible efecto : efectosActivos) {
+            if (efecto.estaActivo()) {
+                sb.append("- ").append(efecto.getDescripcionEfecto())
+                  .append(" (").append(String.format("%.1f", efecto.getTiempoRestante()))
+                  .append("s)\n");
+            }
+        }
+        return sb.toString();
+    }
+}
