@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.graphics.Texture;
 
 public abstract class Gota {
-    protected Rectangle bounds;
-    protected float velocidadY;
-    protected Texture texture;
+    private Rectangle bounds;
+    private float velocidadY;
+    private Texture texture;
     private boolean activo = true;
 
     public Gota(Texture texture, float x, float y, float velocidadY) {
@@ -29,7 +29,7 @@ public abstract class Gota {
         return activo;
     }
 
-    protected void setActivo(boolean a) {
+    public void setActivo(boolean a) {
         activo = a;
     }
 
