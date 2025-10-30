@@ -1,1 +1,25 @@
+package puppy.code;
+
+import com.badlogic.gdx.graphics.Texture;
+
+public class GotaBuena extends Gota {
+
+    private final int valor = 10;
+
+    public GotaBuena(Texture texture, float x, float y, float velocidadY) {
+        super(texture, x, y, velocidadY);
+    }
+
+    @Override
+    public void onCollide(Tarro tarro) {
+        if (!isActivo()) return;
+        tarro.sumarPuntos(valor);
+        setActivo(false);
+    }
+
+    public int getValor() {
+        return valor;
+    }
+}
+
 
