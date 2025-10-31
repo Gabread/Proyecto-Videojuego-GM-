@@ -1,13 +1,10 @@
 package puppy.code;
 
-
-public interface Efectible {
+public interface Efecto {
     void activarEfecto();
     void desactivarEfecto();
     void actualizarEfecto(float delta);
     boolean estaActivo();
-    float getTiempoRestante();    
+    float getTiempoRestante();
     String getDescripcionEfecto();
 }
-
-
