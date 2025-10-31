@@ -1,4 +1,4 @@
-
+//Clase GameScreen
 package puppy.code;
 
 import com.badlogic.gdx.Gdx;
@@ -13,120 +13,110 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
-	final GameLluviaMenu game;
+    private final GameLluviaMenu game;
     private OrthographicCamera camera;
-	private SpriteBatch batch;	   
-	private BitmapFont font;
-	private Tarro tarro;
-	private Lluvia lluvia;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private Tarro tarro;
+    private Lluvia lluvia;
 
-	   
-
-
-	public GameScreen(final GameLluviaMenu game) {
-		this.game = game;
+    public GameScreen(final GameLluviaMenu game) {
+        this.game = game;
         this.batch = game.getBatch();
         this.font = game.getFont();
-		    
-		  Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-		  tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")),hurtSound);
-         
-	      // load the drop sound effect and the rain background "music" 
-         Texture gota = new Texture(Gdx.files.internal("drop.png"));
-         Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
-         
-         Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
         
-	     Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-         lluvia = new Lluvia(gota, gotaMala, dropSound, rainMusic);
-	      
-	      // camera
-	      camera = new OrthographicCamera();
-	      camera.setToOrtho(false, 800, 480);
-	      batch = new SpriteBatch();
-	      
-	      tarro.crear();
-	      
-	    
-	      lluvia.crear();
-	}
+        Sound hurtSound = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
+        tarro = new Tarro(new Texture(Gdx.files.internal("bucket.png")), hurtSound);
+        
+        Texture gota = new Texture(Gdx.files.internal("drop.png"));
+        Texture gotaMala = new Texture(Gdx.files.internal("dropBad.png"));
+        Texture powerVida = new Texture(Gdx.files.internal("powerup_heart.png"));
+        Texture powerEscudo = new Texture(Gdx.files.internal("powerup_ball.png"));
+        
+        Sound dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        
+        lluvia = new Lluvia(gota, gotaMala, powerVida, powerEscudo, dropSound, rainMusic);
+        
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
+        batch = new SpriteBatch();
+        
+        tarro.crear();
+        lluvia.crear();
+    }
 
-	@Override
-	public void render(float delta) {
-		
-		ScreenUtils.clear(0, 0, 0.2f, 1);
-		
-		camera.update();
-		
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		//dibujar textos
-		font.draw(batch, "Gotas totales: " + tarro.getPuntos(), 5, 475);
-		font.draw(batch, "Vidas : " + tarro.getVidas(), 670, 475);
-		font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth/2-50, 475);
-		
-		if (tarro.getGestorEfectos().tieneEfectoActivo(EfectoEscudo.class)) {
-			font.draw(batch, "[ESCUDO ACTIVO]", 5, 450);
-		}
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+        
+        batch.begin();
+        
+        font.draw(batch, "Gotas totales: " + tarro.getPuntos(), 5, 475);
+        font.draw(batch, "Vidas : " + tarro.getVidas(), 670, 475);
+        font.draw(batch, "HighScore : " + game.getHigherScore(), camera.viewportWidth/2-50, 475);
+        
+        if (tarro.getGestorEfectos().tieneEfectoActivo("Escudo protector")) {
+            font.draw(batch, "[ESCUDO ACTIVO]", 5, 450);
+        }
+        
+        // teclas de prueba
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            EfectoEscudo escudo = new EfectoEscudo(tarro, 5.0f);
+            tarro.getGestorEfectos().agregarEfecto(escudo);
+        }
+        
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
+            EfectoVidaExtra vidaExtra = new EfectoVidaExtra(tarro, 1.0f);
+            tarro.getGestorEfectos().agregarEfecto(vidaExtra);
+        }
+        
+        if (!tarro.estaHerido()) {
+            tarro.actualizarMovimiento();
+            
+            if (!lluvia.actualizarMovimiento(tarro)) {
+                if (game.getHigherScore() < tarro.getPuntos()) {
+                    game.setHigherScore(tarro.getPuntos());
+                }
+                game.setScreen(new GameOverScreen(game));
+                dispose();
+            }
+        }
+        
+        tarro.dibujar(batch);
+        lluvia.actualizarDibujoLluvia(batch);
+        
+        batch.end();
+    }
 
-		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-			EfectoEscudo escudo = new EfectoEscudo(tarro, 5.0f);
-			tarro.getGestorEfectos().agregarEfecto(escudo);
-			System.out.println("Escudo activado con tecla E");
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
-			EfectoVidaExtra vidaExtra = new EfectoVidaExtra(tarro, 1.0f);
-			tarro.getGestorEfectos().agregarEfecto(vidaExtra);
-			System.out.println("Vida extra activada con tecla V");
-		}
-		
-		if (!tarro.estaHerido()) {
-	        tarro.actualizarMovimiento();        
-	       if (!lluvia.actualizarMovimiento(tarro)) {
-	    	  if (game.getHigherScore()<tarro.getPuntos())
-	    		  game.setHigherScore(tarro.getPuntos());  
-	    	  game.setScreen(new GameOverScreen(game));
-	    	  dispose();
-	       }
-		}
-		
-		tarro.dibujar(batch);
-		lluvia.actualizarDibujoLluvia(batch);
-		
-		batch.end();
-	}
+    @Override
+    public void resize(int width, int height) {
+    }
 
-	@Override
-	public void resize(int width, int height) {
-	}
+    @Override
+    public void show() {
+        lluvia.continuar();
+    }
 
-	@Override
-	public void show() {
-	  lluvia.continuar();
-	}
+    @Override
+    public void hide() {
+    }
 
-	@Override
-	public void hide() {
+    @Override
+    public void pause() {
+        lluvia.pausar();
+        game.setScreen(new PausaScreen(game, this));
+    }
 
-	}
+    @Override
+    public void resume() {
+    }
 
-	@Override
-	public void pause() {
-		lluvia.pausar();
-		game.setScreen(new PausaScreen(game, this)); 
-	}
-
-	@Override
-	public void resume() {
-
-	}
-
-	@Override
-	public void dispose() {
-      tarro.destruir();
-      lluvia.destruir();
-
-	}
-
+    @Override
+    public void dispose() {
+        tarro.destruir();
+        lluvia.destruir();
+    }
 }
