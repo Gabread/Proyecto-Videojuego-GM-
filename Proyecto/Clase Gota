@@ -1,3 +1,4 @@
+//Clase Gota
 package puppy.code;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -7,20 +8,16 @@ public abstract class Gota {
     private Rectangle bounds;
     private float velocidadY;
     private Texture texture;
-    private boolean activo = true;
+    private boolean activo;
 
     public Gota(Texture texture, float x, float y, float velocidadY) {
         this.texture = texture;
         this.bounds = new Rectangle(x, y, 64, 64);
         this.velocidadY = velocidadY;
+        this.activo = true;
     }
-
-    /** Actualiza la posición de la gota */
-    public void update(float dt) {
-        bounds.y -= velocidadY * dt;
-        if (bounds.y + bounds.height < 0) activo = false;
-    }
-
+    
+    // getters
     public Rectangle getBounds() {
         return bounds;
     }
@@ -29,12 +26,31 @@ public abstract class Gota {
         return activo;
     }
 
-    public void setActivo(boolean a) {
-        activo = a;
-    }
-
     public Texture getTexture() {
         return texture;
     }
+    
+    public float getVelocidadY() {
+        return velocidadY;
+    }
+    
+    // setters
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+    
+    public void setVelocidadY(float velocidadY) {
+        this.velocidadY = velocidadY;
+    }
+
+    // metodos concretos
+    public void update(float dt) {
+        bounds.y -= velocidadY * dt;
+        if (bounds.y + bounds.height < 0) {
+            activo = false;
+        }
+    }
+
+    // metodo abstracto
     public abstract void onCollide(Tarro tarro);
 }
