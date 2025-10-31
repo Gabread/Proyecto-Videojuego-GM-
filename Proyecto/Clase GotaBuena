@@ -1,13 +1,22 @@
+//clase GotaBuena
 package puppy.code;
 
 import com.badlogic.gdx.graphics.Texture;
 
 public class GotaBuena extends Gota {
-
-    private final int valor = 10;
+    private int valor;
 
     public GotaBuena(Texture texture, float x, float y, float velocidadY) {
         super(texture, x, y, velocidadY);
+        this.valor = 10;
+    }
+    
+    public int getValor() {
+        return valor;
+    }
+    
+    public void setValor(int valor) {
+        this.valor = valor;
     }
 
     @Override
@@ -16,10 +25,4 @@ public class GotaBuena extends Gota {
         tarro.sumarPuntos(valor);
         setActivo(false);
     }
-
-    public int getValor() {
-        return valor;
-    }
 }
-
-
