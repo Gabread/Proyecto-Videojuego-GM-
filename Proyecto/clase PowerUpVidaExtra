@@ -1,0 +1,29 @@
+//clase PowerUpVidaExtra
+package puppy.code;
+
+import com.badlogic.gdx.graphics.Texture;
+
+public class PowerUpVidaExtra extends Gota {
+    private float duracionEfecto;
+
+    public PowerUpVidaExtra(Texture texture, float x, float y, float velocidadY, float duracionEfecto) {
+        super(texture, x, y, velocidadY);
+        this.duracionEfecto = duracionEfecto;
+    }
+    
+    public float getDuracionEfecto() {
+        return duracionEfecto;
+    }
+    
+    public void setDuracionEfecto(float duracionEfecto) {
+        this.duracionEfecto = duracionEfecto;
+    }
+
+    @Override
+    public void onCollide(Tarro tarro) {
+        if (!isActivo()) return;
+        EfectoVidaExtra efecto = new EfectoVidaExtra(tarro, duracionEfecto);
+        tarro.getGestorEfectos().agregarEfecto(efecto);
+        setActivo(false);
+    }
+}
