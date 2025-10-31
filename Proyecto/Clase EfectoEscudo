@@ -1,15 +1,13 @@
+
 package puppy.code;
 
-
-public class EfectoEscudo implements Efectible {
+public class EfectoEscudo implements Efecto {
     
     private boolean activo;
     private float tiempoRestante;
     private float duracionTotal;
-    private Tarro tarroAfectado;
     
     public EfectoEscudo(Tarro tarro, float duracion) {
-        this.tarroAfectado = tarro;
         this.duracionTotal = duracion;
         this.tiempoRestante = 0;
         this.activo = false;
@@ -53,7 +51,7 @@ public class EfectoEscudo implements Efectible {
     
     @Override
     public String getDescripcionEfecto() {
-        return "Escudo protector - Inmunidad a gotas malas";
+        return "Escudo protector";
     }
     
     public boolean absorberDaño() {
@@ -64,4 +62,3 @@ public class EfectoEscudo implements Efectible {
         return false;
     }
 }
-
