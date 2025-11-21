@@ -1,4 +1,3 @@
-//Clase PowerUpEscudo
 package puppy.code;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -6,8 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 public class PowerUpEscudo extends Gota {
     private float duracionEscudo;
 
-    public PowerUpEscudo(Texture texture, float x, float y, float velocidadY, float duracionEscudo) {
-        super(texture, x, y, velocidadY);
+    public PowerUpEscudo(Texture texture, float x, float y, 
+                        float velocidadY, float duracionEscudo) {
+        super(texture, x, y, velocidadY, 48, 48);
         this.duracionEscudo = duracionEscudo;
     }
     
@@ -21,7 +21,9 @@ public class PowerUpEscudo extends Gota {
 
     @Override
     public void onCollide(Tarro tarro) {
-        if (!isActivo()) return;
+        if (!isActivo()) {
+            return;
+        }
         EfectoEscudo escudo = new EfectoEscudo(tarro, duracionEscudo);
         tarro.getGestorEfectos().agregarEfecto(escudo);
         setActivo(false);
