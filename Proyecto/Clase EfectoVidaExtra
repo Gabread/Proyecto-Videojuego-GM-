@@ -1,4 +1,3 @@
-//Clase EfectoVidaExtra
 package puppy.code;
 
 public class EfectoVidaExtra implements Efecto {
