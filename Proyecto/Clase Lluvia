@@ -1,4 +1,3 @@
-//Clase Lluvia
 package puppy.code;
 
 import com.badlogic.gdx.Gdx;
@@ -34,7 +33,6 @@ public class Lluvia {
         this.intervaloCreacion = 100000000L;
     }
     
-    // getters
     public float getVelocidadBase() {
         return velocidadBase;
     }
@@ -47,7 +45,6 @@ public class Lluvia {
         return gotas;
     }
     
-    // setters
     public void setVelocidadBase(float velocidadBase) {
         this.velocidadBase = velocidadBase;
     }
@@ -101,9 +98,13 @@ public class Lluvia {
             }
 
             if (gota.getBounds().overlaps(tarro.getArea())) {
+                // Llamar al método de colisión de la gota
                 gota.onCollide(tarro);
-
-                if (gota instanceof GotaBuena) {
+                
+                // Reproducir sonido solo para gotas buenas
+                // verifica si sumó puntos
+                int puntosAntes = tarro.getPuntos();
+                if (tarro.getPuntos() > puntosAntes || esBuena(gota)) {
                     dropSound.play();
                 }
 
@@ -118,6 +119,12 @@ public class Lluvia {
             }
         }
         return true;
+    }
+    
+    // Método auxiliar 
+    private boolean esBuena(Gota gota) {
+        // Comparar por tipo de textura
+        return gota.getTexture() == gotaBuenaTexture;
     }
 
     public void actualizarDibujoLluvia(SpriteBatch batch) {
