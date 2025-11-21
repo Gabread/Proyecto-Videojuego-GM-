@@ -1,0 +1,165 @@
+package puppy.code;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
+
+//Clase Singleton que maneja la configuración del juego
+ 
+public class ConfiguracionJuego {
+    private static ConfiguracionJuego instancia = null;
+    
+    // Configuraciones del juego
+    private float volumenMusica;
+    private float volumenSonidos;
+    private int dificultad;
+    private String nombreJugador;
+    
+    // Constructor privado, nadie puede crear objetos desde afuera
+    private ConfiguracionJuego() {
+        // Valores iniciales
+        this.volumenMusica = 0.7f;
+        this.volumenSonidos = 1.0f;
+        this.dificultad = 2;
+        this.nombreJugador = "Jugador";
+        cargarConfiguracion();
+    }
+    
+    // Método para obtener la instancia
+    public static ConfiguracionJuego getInstancia() {
+        if (instancia == null) {
+            instancia = new ConfiguracionJuego();
+        }
+        return instancia;
+    }
+    
+    // Getters
+    public float getVolumenMusica() {
+        return volumenMusica;
+    }
+    
+    public float getVolumenSonidos() {
+        return volumenSonidos;
+    }
+    
+    public int getDificultad() {
+        return dificultad;
+    }
+    
+    public String getNombreJugador() {
+        return nombreJugador;
+    }
+    
+    // Setters con guardado automático
+    public void setVolumenMusica(float volumen) {
+        if (volumen >= 0 && volumen <= 1) {
+            this.volumenMusica = volumen;
+            guardarConfiguracion();
+        }
+    }
+    
+    public void setVolumenSonidos(float volumen) {
+        if (volumen >= 0 && volumen <= 1) {
+            this.volumenSonidos = volumen;
+            guardarConfiguracion();
+        }
+    }
+    
+    public void setDificultad(int dificultad) {
+        if (dificultad >= 1 && dificultad <= 3) {
+            this.dificultad = dificultad;
+            guardarConfiguracion();
+        }
+    }
+    
+    public void setNombreJugador(String nombre) {
+        this.nombreJugador = nombre;
+        guardarConfiguracion();
+    }
+    
+    // Métodos auxiliares según dificultad
+    public float getVelocidadGotasSegunDificultad() {
+        if (dificultad == 1) {
+            return 200f;
+        } else if (dificultad == 3) {
+            return 400f;
+        } else {
+            return 300f;
+        }
+    }
+    
+    public long getIntervaloCreacionSegunDificultad() {
+        if (dificultad == 1) {
+            return 150000000L;
+        } else if (dificultad == 3) {
+            return 50000000L;
+        } else {
+            return 100000000L;
+        }
+    }
+    
+    // Guardar en archivo
+    private void guardarConfiguracion() {
+        try {
+            FileHandle archivo = Gdx.files.local("config.txt");
+            String texto = "";
+            texto = texto + "volumenMusica=" + volumenMusica + "\n";
+            texto = texto + "volumenSonidos=" + volumenSonidos + "\n";
+            texto = texto + "dificultad=" + dificultad + "\n";
+            texto = texto + "nombreJugador=" + nombreJugador + "\n";
+            archivo.writeString(texto, false);
+        } catch (Exception e) {
+            System.out.println("Error al guardar: " + e.getMessage());
+        }
+    }
+    
+    // Cargar desde archivo
+    private void cargarConfiguracion() {
+        try {
+            FileHandle archivo = Gdx.files.local("config.txt");
+            if (archivo.exists()) {
+                String contenido = archivo.readString();
+                String[] lineas = contenido.split("\n");
+                
+                for (int i = 0; i < lineas.length; i++) {
+                    String linea = lineas[i];
+                    if (linea.contains("=")) {
+                        String[] partes = linea.split("=");
+                        String clave = partes[0];
+                        String valor = partes[1];
+                        
+                        if (clave.equals("volumenMusica")) {
+                            volumenMusica = Float.parseFloat(valor);
+                        } 
+                        else {
+                        	if (clave.equals("volumenSonidos")) {
+                            volumenSonidos = Float.parseFloat(valor);
+                        	} 
+                        	else {
+                        		if (clave.equals("dificultad")) {
+                        			dificultad = Integer.parseInt(valor);
+                        		} 
+                        		else { 
+                        			if (clave.equals("nombreJugador")) {
+                        				nombreJugador = valor;
+                        			}
+                    			}
+                			}
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error al cargar: " + e.getMessage());
+        }
+    }
+    
+    // Restaurar valores por defecto
+    public void restaurarDefecto() {
+        volumenMusica = 0.7f;
+        volumenSonidos = 1.0f;
+        dificultad = 2;
+        nombreJugador = "Jugador";
+        guardarConfiguracion();
+    }
+}
