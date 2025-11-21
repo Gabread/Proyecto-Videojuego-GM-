@@ -1,4 +1,3 @@
-
 package puppy.code;
 
 public class EfectoEscudo implements Efecto {
