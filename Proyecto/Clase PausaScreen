@@ -1,4 +1,3 @@
-//Clase PausaScreen
 package puppy.code;
 
 import com.badlogic.gdx.Gdx;
@@ -20,8 +19,8 @@ public class PausaScreen implements Screen {
         this.juego = juego;
         this.batch = game.getBatch();
         this.font = game.getFont();
-        		camera = new OrthographicCamera();
-        		camera.setToOrtho(false, 800, 480);
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
     }
 
     @Override
@@ -62,5 +61,6 @@ public class PausaScreen implements Screen {
     }
 
     @Override
-    public void dispose() {}
+    public void dispose() {
+    }
 }
