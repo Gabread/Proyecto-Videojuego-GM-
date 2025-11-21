@@ -1,4 +1,3 @@
-//Clase GestorEfecto
 package puppy.code;
 
 import java.util.ArrayList;
@@ -28,10 +27,23 @@ public class GestorEfectos {
         }
     }
     
-    public boolean tieneEfectoActivo(String nombreEfecto) {
+    // Método, busca por tipo de efecto
+    public boolean tieneEscudoActivo() {
         for (int i = 0; i < efectosActivos.size(); i++) {
             Efecto efecto = efectosActivos.get(i);
-            if (efecto.getDescripcionEfecto().equals(nombreEfecto) && efecto.estaActivo()) {
+            String descripcion = efecto.getDescripcionEfecto();
+            if (descripcion.equals("Escudo protector") && efecto.estaActivo()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean tieneVidaExtraActiva() {
+        for (int i = 0; i < efectosActivos.size(); i++) {
+            Efecto efecto = efectosActivos.get(i);
+            String descripcion = efecto.getDescripcionEfecto();
+            if (descripcion.equals("Vida Extra") && efecto.estaActivo()) {
                 return true;
             }
         }
