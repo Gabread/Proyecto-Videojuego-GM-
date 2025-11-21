@@ -10,9 +10,10 @@ public class GotaMala extends Gota {
 
     @Override
     public void onCollide(Tarro tarro) {
-        if (!isActivo()) return;
+        if (!isActivo()) {
+            return;
+        }
         tarro.dañar();
         setActivo(false);
     }
 }
-
