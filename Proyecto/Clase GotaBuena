@@ -1,4 +1,3 @@
-//clase GotaBuena
 package puppy.code;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -18,10 +17,12 @@ public class GotaBuena extends Gota {
     public void setValor(int valor) {
         this.valor = valor;
     }
-
+    
     @Override
     public void onCollide(Tarro tarro) {
-        if (!isActivo()) return;
+        if (!isActivo()) {
+            return;
+        }
         tarro.sumarPuntos(valor);
         setActivo(false);
     }
